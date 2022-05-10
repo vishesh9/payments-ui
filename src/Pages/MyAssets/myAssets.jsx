@@ -101,7 +101,7 @@ const MyAssets = () => {
           </Grid>
         </TabPanel>
         <TabPanel value={value} index={1}>
-          kjhkj
+          Second tab
         </TabPanel>
       </Box>
     </>

@@ -7,7 +7,17 @@ import Box from "@mui/material/Box";
 import CreditCard from "./CreditCard";
 import AssetsToBuy from "../Pages/Assets/assets";
 import MyAssets from "../Pages/MyAssets/myAssets";
-import { Button, Card, CardContent, Grid } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Icon,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
+import Pin from "../Pages/Pin/pin";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -90,6 +100,7 @@ export default function BasicTabs() {
         >
           <Tab label="Credit Cards" {...a11yProps(0)} />
           <Tab label="Payments" {...a11yProps(1)} />
+          <Tab label="PIN" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -143,6 +154,9 @@ export default function BasicTabs() {
             </Card>
           </Grid>
         </Grid>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Pin />
       </TabPanel>
     </Box>
   );
