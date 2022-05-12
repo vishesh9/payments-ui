@@ -38,7 +38,7 @@ export default function Keypad(props) {
               {row.map((r) => (
                 <TableCell
                   align="center"
-                  sx={{ maxWidth: "8px" }}
+                  sx={{ maxWidth: "8px", cursor: "pointer" }}
                   onClick={() => {
                     handleNumberClick(r);
                   }}
