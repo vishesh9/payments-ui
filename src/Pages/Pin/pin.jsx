@@ -8,12 +8,48 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Keypad from "../../Components/Keypad";
+import InputMask from "react-input-mask";
 
 export default function Pin() {
-  const [value, setValue] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [leftValue, setLeftValue] = useState("");
+  const [rightValue, setRightValue] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
+  const rightInputRef = useRef(null);
+  const leftInputRef = useRef(null);
+
+  const handleLeftBoxChange = (e) => {
+    const val = e.target.value;
+    setLeftValue(val);
+  };
+
+  const handleRightBoxChange = (e) => {
+    const val = e.target.value;
+    setRightValue(val);
+  };
+
+  const handleRightKeyDown = (e) => {
+    debugger;
+    const rightValueWithoutHypen = rightValue.replace("-", "");
+    if (
+      rightValueWithoutHypen[0] === "x" &&
+      leftInputRef.current &&
+      (e.key === "Backspace" || e.key === "Delete")
+    ) {
+      leftInputRef.current.querySelector("input").focus();
+    }
+  };
+
+  useEffect(() => {
+    if (
+      leftValue.length === 4 &&
+      !Number.isNaN(+leftValue.slice(0, -1)) &&
+      rightInputRef.current
+    ) {
+      rightInputRef.current.querySelector("input").focus();
+    }
+  }, [leftValue]);
 
   return (
     <Box sx={{ width: "100%" }} justifyContent="center">
@@ -28,17 +64,47 @@ export default function Pin() {
       </Box>
 
       <Box sx={{ position: "relative" }}>
-        <TextField
-          type={showPassword ? "text" : "password"}
-          inputMode="numeric"
-          pattern={"[0-9]*"}
-          name={"amount"}
-          placeholder="XXX-XX-XXXX"
-          sx={{ input: { textAlign: "center" } }}
-          // className={classes.root}
-          fullWidth
-          value={value}
-        />
+        <InputMask
+          mask="999-"
+          value={leftValue}
+          disabled={false}
+          maskChar="x"
+          onChange={(e) => handleLeftBoxChange(e)}
+        >
+          {() => (
+            <TextField
+              type={"text"}
+              inputMode="numeric"
+              pattern={"[0-9]*"}
+              name={"amount"}
+              placeholder="xxx-"
+              sx={{ input: { textAlign: "right" }, width: "50%" }}
+              value={leftValue}
+              variant="standard"
+              ref={leftInputRef}
+            />
+          )}
+        </InputMask>
+        <InputMask
+          mask="99-9999"
+          value={rightValue}
+          disabled={false}
+          maskChar="x"
+          onChange={(e) => handleRightBoxChange(e)}
+        >
+          {() => (
+            <TextField
+              type={showPassword ? "text" : "password"}
+              variant="standard"
+              sx={{ input: { textAlign: "left" }, width: "50%" }}
+              placeholder="xx-xxxx"
+              ref={rightInputRef}
+              onKeyDown={handleRightKeyDown}
+              tabIndex={0}
+            />
+          )}
+        </InputMask>
+
         <Box sx={{ position: "absolute", right: "2%", top: "15%" }}>
           <IconButton
             aria-label="toggle password visibility"
@@ -51,9 +117,9 @@ export default function Pin() {
           </IconButton>
         </Box>
       </Box>
-      <Box m={1} display="flex" justifyContent="center" textAlign="center">
+      {/* <Box m={1} display="flex" justifyContent="center" textAlign="center">
         <Keypad setValue={setValue} value={value} />
-      </Box>
+      </Box> */}
       <Box m={1} display="flex" justifyContent="center" textAlign="center">
         <Button
           variant="contained"
